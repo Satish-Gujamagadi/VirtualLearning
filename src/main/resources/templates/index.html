@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Learning Platform</title>
+<style>
+body {
+	font-family: 'Arial', sans-serif;
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	background-color: #f4f4f4;
+}
+
+header {
+	background-color: #333;
+	color: white;
+	padding: 10px;
+	text-align: center;
+}
+
+nav {
+	background-color: #555;
+	padding: 10px;
+	text-align: center;
+}
+
+nav a {
+	color: white;
+	text-decoration: none;
+	padding: 10px;
+	margin: 5px;
+	display: inline-block;
+}
+
+main {
+	padding: 20px;
+}
+
+footer {
+	background-color: #333;
+	color: white;
+	text-align: center;
+	padding: 10px;
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+}
+
+#error-message {
+	color: #4caf50;
+	margin-top: 10px;
+	margin-left: 20px; /* Adjust the left margin as needed */
+}
+
+#logout-message {
+	color: white;
+	margin-top: 10px;
+	text-align: right;
+}
+</style>
+</head>
+<body>
+
+
+	<header>
+		<h1>Virtual Learning Platform</h1>
+
+		<div th:if="${logout}" id="logout-message">
+			<p th:text=" ${logout} + ' !'"></p>
+		</div>
+	</header>
+
+	<nav>
+		<a href="/">Home</a> <a href="/courses">Courses</a> <a href="/contact">Contact</a>
+	</nav>
+
+	<main>
+
+
+		<!-- Sign Up Button -->
+		<button class="signup-button" onclick="location.href='/signup';">Sign
+			Up</button>
+		<h2>Welcome to Our Learning Platform</h2>
+		<p>Explore a variety of courses and resources to enhance your
+			learning experience.</p>
+
+		<!-- Login Section -->
+		<section id="login">
+			<h2>Login</h2>
+			<form action="/login" method="post">
+				<table id="login-table">
+
+					<tr class="form-row">
+						<td><label for="email">Email</label></td>
+						<td><input type="text" id="loginEmail" name="email" required></td>
+					</tr>
+					<tr class="form-row">
+						<td><label for="password">Password:</label></td>
+						<td><input type="password" id="loginPassword" name="password"
+							required></td>
+					</tr>
+					<tr>
+						<td colspan="2">
+							<button type="submit">Login</button>
+						</td>
+					</tr>
+
+				</table>
+			</form>
+
+			</div>
+		</section>
+
+	</main>
+
+	<!-- error message will be displayed if there is a success attribute in the model -->
+	<div th:if="${error}" id="error-message">
+		<p th:text=" ${error} + ' !'"></p>
+	</div>
+
+	<footer> &copy; 2023 Virtual Learning Platform </footer>
+
+</body>
+</html>

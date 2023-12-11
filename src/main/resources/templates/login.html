@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Cache-Control"
+	content="no-store, no-cache, must-revalidate, max-age=0" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-store" />
+
+<title>Login Page</title>
+
+<!-- Add your CSS styles or link to external stylesheets here -->
+<style>
+body {
+	font-family: 'Arial', sans-serif;
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	background-color: #f4f4f4;
+}
+
+header {
+	background-color: #333;
+	color: white;
+	padding: 10px;
+	text-align: center;
+}
+
+#profile-section img {
+	width: 100px;
+	height: 100px;
+	border-radius: 50%; /* Set border-radius to 50% for a circular shape */
+	margin-right: 10px;
+	border-color: blue;
+}
+
+#profile-section {
+	position: absolute;
+	top: 15px;
+	left: 15px;
+	display: flex;
+	align-items: flex-end;
+}
+
+#logout-button {
+	position: absolute;
+	top: 15px;
+	right: 15px;
+}
+
+nav {
+	background-color: #555;
+	padding: 5px;
+	text-align: center;
+}
+
+nav a {
+	color: white;
+	text-decoration: none;
+	padding: 10px;
+	margin: 5px;
+	display: inline-block;
+}
+
+nav a:hover {
+	background-color: #ddd;
+	color: black;
+}
+
+#login-container {
+	margin: 20px;
+	padding: 20px;
+	background-color: #fff;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+footer {
+	background-color: #333;
+	color: white;
+	text-align: center;
+	padding: 10px;
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+}
+</style>
+</head>
+<body>
+
+	<!-- Header Section -->
+	<header>
+		<script>
+			// Disable browser back button after logout
+			function disableBack() {
+				window.history.forward();
+			}
+
+			// Call the disableBack function when the page is loaded
+			disableBack();
+
+			// Enable the back button when navigating away from the page
+			window.onload = function() {
+				setTimeout(function() {
+					disableBack();
+				}, 0);
+			}
+			// Disable navigation through browser history
+			window.onbeforeunload = function() {
+				return "You can't go back after logout.";
+			}
+		</script>
+
+		<div id="profile-section">
+			<!-- Display the profile photo icon -->
+			<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8Eb-mK4AHngeSBKFCPOZadMhbPwkB54aZIg&usqp=CAU" alt="Profile Icon">
+			<!-- Display the welcome message with the name -->
+			<p th:text="'Welcome, ' + ${userName} + '!'"></p>
+		</div>
+
+		<!-- <div id="profile-section">
+			Make the profile icon clickable and redirect to /upload
+			<a th:href="@{/upload}"> Display the profile photo icon
+				<img
+				src="https://github.com/Satish-Gujamagadi/Image-Storage/blob/main/987654321.jpeg"
+				alt="Profile Icon">
+			</a>
+			Display the welcome message with the name
+			<p th:text="'Welcome, ' + ${userName} + '!'"></p>
+		</div> -->
+		<h1>Your Virtual Learning Platform</h1>
+	</header>
+
+	<!-- Navigation Bar -->
+	<nav>
+		<a href="/home">Main</a> <a href="/MyCourses">My Courses</a>
+		<!-- Add more navigation links as needed -->
+	</nav>
+
+	<!-- Main Content -->
+	<div id="login-container">
+		<!-- Assigned Courses Section -->
+		<section id="assigned-courses">
+			<h3>Assigned Courses</h3>
+			<ul>
+				<!-- Dynamically populate this list with assigned courses from the backend -->
+				<li>Course 1</li>
+				<li>Course 2</li>
+				<li>Course 3</li>
+			</ul>
+		</section>
+
+		<!-- Documents Section -->
+		<section id="documents">
+			<h3>Documents</h3>
+			<ul>
+				<!-- Dynamically populate this list with documents from the backend -->
+				<li>Document 1</li>
+				<li>Document 2</li>
+				<li>Document 3</li>
+			</ul>
+		</section>
+
+		<!-- Add more sections or content as needed -->
+
+		<!-- Logout Button -->
+		<div id="logout-button">
+			<!-- Logout Button -->
+			<form action="/logout" method="post">
+				<button type="submit">Logout</button>
+			</form>
+		</div>
+	</div>
+
+	<!-- Footer Section -->
+	<footer>&copy; 2023 Virtual Learning Platform </footer>
+</body>
+</html>

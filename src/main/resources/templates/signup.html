@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Sign Up</title>
+<style>
+body {
+	font-family: 'Arial', sans-serif;
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	background-color: #f4f4f4;
+}
+
+header {
+	background-color: #333;
+	color: white;
+	padding: 10px;
+	text-align: center;
+}
+
+footer {
+	background-color: #333;
+	color: white;
+	text-align: center;
+	padding: 10px;
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+}
+
+nav {
+	background-color: #555;
+	padding: 10px;
+	text-align: center;
+}
+
+nav a {
+	color: white;
+	text-decoration: none;
+	padding: 10px;
+	margin: 5px;
+	display: inline-block;
+}
+
+main {
+	padding: 20px;
+}
+
+footer {
+	background-color: #333;
+	color: white;
+	text-align: center;
+	padding: 10px;
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+}
+
+#signup-form button:hover {
+	background-color: #45a049;
+}
+
+#success-message {
+	color: #4caf50;
+	margin-top: 20px;
+}
+</style>
+</head>
+<body>
+
+	<header>
+		<h1>Student Sign Up</h1>
+	</header>
+
+	<nav>
+		<a href="/">Home</a> <a href="/courses">Courses</a> <a
+			href="/students">Students</a> <a href="/contact">Contact</a>
+	</nav>
+
+
+	<main>
+		<!-- Sign Up Section -->
+		<section id="signup-container">
+			<form action="/signup" method="post" th:object="${students}">
+
+				<table id="signup-table">
+					<tr>
+						<th colspan="2">Sign Up</th>
+					</tr>
+					<tr>
+						<td><label for="name">Name:</label></td>
+						<td><input type="text" id="name" name="name" required></td>
+					</tr>
+					<tr>
+						<td><label for="email">Email:</label></td>
+						<td><input type="email" id="email" name="email" required
+							th:field="*{email}"></td>
+					</tr>
+					<tr>
+						<td><label for="password">Password:</label></td>
+						<td><input type="password" id="password" name="password"
+							required></td>
+					</tr>
+					<tr>
+						<td><label for="state">State:</label></td>
+						<td><input type="text" id="state" name="state" required></td>
+					</tr>
+					<tr>
+						<td><label for="phNo">Phone Number:</label></td>
+						<td><input type="text" id="phNo" name="phNo" required></td>
+					</tr>
+					<tr>
+						<td>
+							<button type="submit">Sign Up</button>
+						</td>
+					</tr>
+				</table>
+			</form>
+		</section>
+	</main>
+
+	<!-- Success message will be displayed if there is a success attribute in the model -->
+	<div th:if="${message}" id="success-message">
+		<p th:text=" ${message} + '!'"></p>
+	</div>
+	<footer> &copy; 2023 Virtual Learning Platform </footer>
+</body>
+</html>

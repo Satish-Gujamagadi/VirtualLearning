@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mock Test</title>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        function startTimer() {
+            var timeLeft = /*[[${timeLeft}]]*/ 60 * 60;
+            var timer = setInterval(function () {
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    alert("Time's up!");
+                    // You can add logic to check the answers here
+                } else {
+                    timeLeft--;
+                    document.getElementById("timer").innerHTML = formatTime(timeLeft);
+                }
+            }, 1000);
+        }
+
+        function formatTime(seconds) {
+            var minutes = Math.floor(seconds / 60);
+            var remainingSeconds = seconds % 60;
+            return minutes + ":" + (remainingSeconds < 10 ? "0" : "") + remainingSeconds;
+        }
+        
+        function handleFileUpload(event) {
+            var fileInput = event.target;
+            var file = fileInput.files[0];
+            
+            if (file) {
+                var reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    var content = e.target.result;
+                    // You can process the content here (e.g., parse CSV)
+                    console.log(content);
+                };
+                
+                reader.readAsText(file);
+            }
+        }
+        /*]]>*/
+    </script>
+</head>
+<body onload="startTimer()">
+    <h1>Mock Test</h1>
+    <div id="timer">60:00</div>
+
+    <h2>Questions:</h2>
+    <form>
+        <label for="fileInput">Upload Questions and Answers (CSV format):</label>
+        <input type="file" id="fileInput" accept=".csv" onchange="handleFileUpload(event)">
+    </form>
+</body>
+</html>
