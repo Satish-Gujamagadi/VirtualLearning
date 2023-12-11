@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excel to CSV Converter</title>
+</head>
+<body>
+    <h1>Excel to CSV Converter</h1>
+
+    <form th:action="@{/excel/uploadCSV}" th:method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".xlsx">
+        <button type="submit">Upload and Convert</button>
+    </form>
+
+    <p th:if="${successMessage}" th:text="${successMessage}" style="color: green;"></p>
+    <p th:if="${errorMessage}" th:text="${errorMessage}" style="color: red;"></p>
+</body>
+</html>
