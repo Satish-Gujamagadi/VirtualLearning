@@ -29,13 +29,14 @@ public class ExcelController {
 	@PostMapping("/uploadCSV")
 	public String handleFileUpload(@RequestParam("file") MultipartFile file, Model model) {
 		try {
-			String excelFilePath = "uploads/input.xlsx";
-			String csvFilePath = "uploads/output.csv";
+			String excelFilePath = "C:\\Users\\Satish G\\OneDrive\\Documents\\Uploads\\input.xlsx";
+			String csvFilePath = "C:\\Users\\Satish G\\OneDrive\\Documents\\Uploads\\output.csv";
 
 			// Save the uploaded Excel file
 			file.transferTo(new File(excelFilePath));
 
 			// Convert Excel to CSV
+			
 			excelToCsvConverter.convertExcelToCsv(excelFilePath, csvFilePath);
 
 			model.addAttribute("successMessage", "File uploaded and converted successfully!");
