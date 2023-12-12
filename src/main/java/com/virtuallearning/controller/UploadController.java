@@ -31,7 +31,7 @@ public class UploadController {
 	private static final String GITHUB_REPO_PATH = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8Eb-mK4AHngeSBKFCPOZadMhbPwkB54aZIg&usqp=CAU";
 	private static final String GITHUB_UPLOAD_DIR = "uploads";
 
-	@GetMapping
+	@GetMapping("/showUpload")
 	public String showUploadForm() {
 		return "upload";
 	}

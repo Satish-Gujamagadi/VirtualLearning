@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MCQ Form</title>
+</head>
+<body>
+
+	<div>
+		<h2>Upload MCQ CSV File</h2>
+		<form action="/mcq/postcsv" method="post"
+			enctype="multipart/form-data">
+			<input type="file" name="file" accept=".csv" required>
+			<button type="submit" onclick="uploadFile()">Upload</button>
+		</form>
+		<!-- <p id="statusMessage"></p> -->
+	</div>
+
+	<!-- <script>
+    function uploadFile() {
+        const form = document.getElementById('mcqUploadForm');
+        const statusMessage = document.getElementById('statusMessage');
+
+        const formData = new FormData(form);
+
+        fetch('/mcq/postcsv', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                statusMessage.textContent = 'File uploaded and saved successfully!';
+            } else {
+                statusMessage.textContent = 'Error uploading or saving the file. Please try again.';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            statusMessage.textContent = 'An unexpected error occurred. Please try again.';
+        });
+    }
+</script> -->
+
+</body>
+</html>
