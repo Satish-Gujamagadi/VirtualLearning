@@ -59,6 +59,22 @@ main {
 	padding: 20px;
 }
 
+#Quest {
+	color: navy; /* Specify your desired color code for the timer */
+	font-size: 18px; /* Adjust the font size as needed */
+	text-align: right; /* Align the text to the right */
+	padding: 10px;
+	display: flex; /* Use flex container */
+	flex-wrap: wrap; /* Allow content to wrap to the next line */
+	justify-content: flex-start;
+	/* Align content to the end (left/start of page) */
+}
+
+/* Individual items within the flex container */
+#Quest span {
+	margin-right: 20px; /* Adjust the margin between items as needed */
+}
+
 footer {
 	background-color: #333;
 	color: white;
@@ -104,6 +120,12 @@ footer {
 	margin-bottom: 5px;
 	cursor: pointer;
 }
+
+ul, li {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
 </style>
 
 <script th:src="@{/js/timer.js}"></script>
@@ -147,7 +169,7 @@ footer {
 			<p th:text=" ${logout} + ' !'"></p>
 		</div>
 	</header>
-	
+
 	<nav-b>
 	<nav>
 		<h1>Mock Test</h1>
@@ -159,33 +181,49 @@ footer {
 	</nav-b>
 	<!-- Display the current question -->
 	<div th:if="${questions.hasContent()}">
-		<ul th:each="question, questionIndex : ${questions.content}">
-			<li>
-				<p th:text="${questionIndex.index + 1 + '. ' + question.question}"></p>
-				<ul>
-					<li th:text="${question.option1}"></li>
-					<li th:text="${question.option2}"></li>
-					<li th:text="${question.option3}"></li>
-					<li th:text="${question.option4}"></li>
-				</ul>
-			</li>
-		</ul>
-	</div>
-
-	<div>
-		<!-- Display page information -->
-		<p
-			th:text="'Page ' + ${questions.number + 1} + ' of ' + ${questions.totalPages} + ' | Page Size: ' + ${questions.size}"></p>
-		<!-- Add a button to go to the next page -->
-		<button th:if="${questions.hasNext()}"
-			th:attr="onclick='|window.location.href=\'?page=${questions.nextPageable().pageNumber}\'|'">Next
-			Page</button>
-
+		<form>
+			<ul th:each="question, questionIndex : ${questions.content}">
+				<li>
+					<p th:text="${questionIndex.index + 1 + '. ' + question.question}"></p>
+					<ul>
+						<li><input type="radio"
+							th:id="'option1_' + ${questionIndex.index}"
+							name="'question_' + ${questionIndex.index}" /> <label
+							th:for="'option1_' + ${questionIndex.index}"
+							th:text="${question.option1}"></label></li>
+						<li><input type="radio"
+							th:id="'option2_' + ${questionIndex.index}"
+							name="'question_' + ${questionIndex.index}" /> <label
+							th:for="'option2_' + ${questionIndex.index}"
+							th:text="${question.option2}"></label></li>
+						<li><input type="radio"
+							th:id="'option3_' + ${questionIndex.index}"
+							name="'question_' + ${questionIndex.index}" /> <label
+							th:for="'option3_' + ${questionIndex.index}"
+							th:text="${question.option3}"></label></li>
+						<li><input type="radio"
+							th:id="'option4_' + ${questionIndex.index}"
+							name="'question_' + ${questionIndex.index}" /> <label
+							th:for="'option4_' + ${questionIndex.index}"
+							th:text="${question.option4}"></label></li>
+					</ul>
+				</li>
+			</ul>
+			<h2>
+				<button type="submit">Submit</button>
+			</h2>
+		</form>
 	</div>
 
 	<!-- Display question numbers in circles -->
-	<div>
-		<label>Select Page:</label>
+
+	<div id="Quest">
+		<h3>
+			<label> Select Question:</label>
+		</h3>
+	</div>
+
+	<div id="Quest">
 		<div
 			th:each="page, pageIndex : ${#numbers.sequence(1, questions.totalPages)}">
 			<span class="page-number" th:text="${page}"
@@ -193,19 +231,85 @@ footer {
 		</div>
 	</div>
 
+	<div>
+		<!-- Display page information -->
+		<p
+			th:text="'Page ' + ${questions.number + 1} + ' of ' + ${questions.totalPages}"></p>
+
+
+		<script th:inline="javascript">
+			/*<![CDATA[*/
+			function selectPage(page) {
+				// Update the URL with the selected page
+				var url = new URL(window.location.href);
+				url.searchParams.set('page', page - 1);
+				window.history.replaceState({}, document.title, url);
+
+				// Do something else when a page number is selected, e.g., highlight the selected page.
+				alert('Selected page: ' + page);
+			}
+			/*]]>*/
+		</script>
+	</div>
+
+	<!-- ######################## next & Previous Buttons  ######################## -->
+
+	<!-- Add a button to go to the previous page -->
+	<button th:if="${questions.hasPrevious()}" onclick="previousPage()">Previous
+		Page</button>
+
+	<!-- Add a button to go to the next page -->
+	<button th:if="${questions.hasNext()}" onclick="nextPage()">Next
+		Page</button>
+
+
+	<!-- ######################## next & Previous Buttons Script ######################## -->
+
+	<!-- Add a script to handle navigation -->
 	<script th:inline="javascript">
 		/*<![CDATA[*/
-		function selectPage(page) {
-			// Update the URL with the selected page
+		function navigateToPage(page) {
+			// Construct the URL for the specified page
 			var url = new URL(window.location.href);
-			url.searchParams.set('page', page - 1);
-			window.history.replaceState({}, document.title, url);
+			url.searchParams.set('page', page);
 
-			// Do something else when a page number is selected, e.g., highlight the selected page.
-			alert('Selected page: ' + page);
+			// Navigate to the new URL
+			window.location.href = url.href;
+		}
+
+		function previousPage() {
+			// Get the current page number
+			var currentPage = /*[[${questions.number}]]*/0;
+
+			// Calculate the previous page number
+			var previousPage = currentPage - 1;
+
+			// Navigate to the previous page
+			navigateToPage(previousPage);
+		}
+
+		function nextPage() {
+			// Get the current page number
+			var currentPage = /*[[${questions.number}]]*/0;
+
+			// Calculate the next page number
+			var nextPage = currentPage + 1;
+
+			// Navigate to the next page
+			navigateToPage(nextPage);
 		}
 		/*]]>*/
 	</script>
+
+
+
+
+
+	<!--############# Footer Section ###############-->
+
+	<!-- 	<footer> &copy; 2023 Virtual Learning </footer> -->
+
+	<!-- ##################################### -->
 
 </body>
 </html>
