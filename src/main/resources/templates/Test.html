@@ -4,6 +4,133 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mock Test</title>
+
+<style>
+body {
+	font-family: 'Arial', sans-serif;
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	background-color: #f4f4f4;
+}
+
+header {
+	background-color: #333;
+	color: white;
+	padding: 5px;
+	text-align: center;
+}
+
+nav {
+	background-color: #555;
+	padding: 1px;
+	text-align: center;
+}
+
+nav a {
+	color: white;
+	text-decoration: none;
+	padding: 10px;
+	margin: 5px;
+	display: inline-block;
+}
+
+nav-b {
+	background-color: #555;
+	padding: 1px;
+	text-align: left;
+	display: flex;
+	justify-content: space-between;
+	/* Align children elements at each end */
+	align-items: center; /* Vertically center children elements */
+	padding-left: 20px; /* Add left padding for space */
+	padding-right: 20px; /* Add right padding for space */
+	color: #fff; /* Text color for the navigation bar */
+}
+
+#timer {
+	color: #ff5733; /* Specify your desired color code for the timer */
+	font-size: 18px; /* Adjust the font size as needed */
+	text-align: left;
+	/* Specify the desired text alignment for the timer */
+}
+
+main {
+	padding: 20px;
+}
+
+#Quest {
+	color: navy; /* Specify your desired color code for the timer */
+	font-size: 18px; /* Adjust the font size as needed */
+	text-align: right; /* Align the text to the right */
+	padding: 10px;
+	display: flex; /* Use flex container */
+	flex-wrap: wrap; /* Allow content to wrap to the next line */
+	justify-content: flex-start;
+	/* Align content to the end (left/start of page) */
+}
+
+/* Individual items within the flex container */
+#Quest span {
+	margin-right: 20px; /* Adjust the margin between items as needed */
+}
+
+footer {
+	background-color: #333;
+	color: white;
+	text-align: center;
+	padding: 10px;
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+}
+
+#error-message {
+	color: #4caf50;
+	margin-top: 10px;
+	margin-left: 20px; /* Adjust the left margin as needed */
+}
+
+#logout-message {
+	color: white;
+	margin-top: 10px;
+	text-align: right;
+}
+
+/* Style for clickable page numbers */
+.page-number-container {
+	position: fixed;
+	top: 50%;
+	right: 10px; /* Adjust the right offset as needed */
+	transform: translateY(-50%);
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	z-index: 9999; /* Ensure the page numbers are above other elements */
+}
+
+.page-number {
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	background-color: #3498db;
+	color: #fff;
+	text-align: center;
+	border-radius: 50%;
+	margin-bottom: 5px;
+	cursor: pointer;
+}
+
+ul, li {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+</style>
+
+<script th:src="@{/js/timer.js}"></script>
+
+<!-- Add this script block to include the JavaScript -->
 <script th:inline="javascript">
 	/*<![CDATA[*/
 	function startTimer() {
@@ -27,35 +154,162 @@
 		return minutes + ":" + (remainingSeconds < 10 ? "0" : "")
 				+ remainingSeconds;
 	}
-
-	function handleFileUpload(event) {
-		var fileInput = event.target;
-		var file = fileInput.files[0];
-
-		if (file) {
-			var reader = new FileReader();
-
-			reader.onload = function(e) {
-				var content = e.target.result;
-				// You can process the content here (e.g., parse CSV)
-				console.log(content);
-			};
-
-			reader.readAsText(file);
-		}
-	}
 	/*]]>*/
 </script>
-</head>
-<body onload="startTimer()">
-	<h1>Mock Test</h1>
-	<div id="timer">60:00</div>
 
-	<h2>Questions:</h2>
-	<form>
-		<label for="fileInput">Upload Questions and Answers (CSV
-			format):</label> <input type="file" id="fileInput" accept=".csv"
-			onchange="handleFileUpload(event)">
-	</form>
+
+</head>
+<!-- -------------------------------- -->
+<body onload="startTimer()">
+
+	<header>
+		<h1>Virtual Learning Platform</h1>
+
+		<div th:if="${logout}" id="logout-message">
+			<p th:text=" ${logout} + ' !'"></p>
+		</div>
+	</header>
+
+	<nav-b>
+	<nav>
+		<h1>Mock Test</h1>
+	</nav>
+	<h3>
+		Timer:
+		<div id="timer">60:00</div>
+	</h3>
+	</nav-b>
+	<!-- Display the current question -->
+	<div th:if="${questions.hasContent()}">
+		<form>
+			<ul th:each="question, questionIndex : ${questions.content}">
+				<li>
+					<p th:text="${questionIndex.index + 1 + '. ' + question.question}"></p>
+					<ul>
+						<li><input type="radio"
+							th:id="'option1_' + ${questionIndex.index}"
+							name="'question_' + ${questionIndex.index}" /> <label
+							th:for="'option1_' + ${questionIndex.index}"
+							th:text="${question.option1}"></label></li>
+						<li><input type="radio"
+							th:id="'option2_' + ${questionIndex.index}"
+							name="'question_' + ${questionIndex.index}" /> <label
+							th:for="'option2_' + ${questionIndex.index}"
+							th:text="${question.option2}"></label></li>
+						<li><input type="radio"
+							th:id="'option3_' + ${questionIndex.index}"
+							name="'question_' + ${questionIndex.index}" /> <label
+							th:for="'option3_' + ${questionIndex.index}"
+							th:text="${question.option3}"></label></li>
+						<li><input type="radio"
+							th:id="'option4_' + ${questionIndex.index}"
+							name="'question_' + ${questionIndex.index}" /> <label
+							th:for="'option4_' + ${questionIndex.index}"
+							th:text="${question.option4}"></label></li>
+					</ul>
+				</li>
+			</ul>
+			<h2>
+				<button type="submit">Submit</button>
+			</h2>
+		</form>
+	</div>
+
+	<!-- Display question numbers in circles -->
+
+	<div id="Quest">
+		<h3>
+			<label> Select Question:</label>
+		</h3>
+	</div>
+
+	<div id="Quest">
+		<div
+			th:each="page, pageIndex : ${#numbers.sequence(1, questions.totalPages)}">
+			<span class="page-number" th:text="${page}"
+				th:onclick="'selectPage(' + ${page} + ')'"></span>
+		</div>
+	</div>
+
+	<div>
+		<!-- Display page information -->
+		<p
+			th:text="'Page ' + ${questions.number + 1} + ' of ' + ${questions.totalPages}"></p>
+
+
+		<script th:inline="javascript">
+			/*<![CDATA[*/
+			function selectPage(page) {
+				// Update the URL with the selected page
+				var url = new URL(window.location.href);
+				url.searchParams.set('page', page - 1);
+				window.history.replaceState({}, document.title, url);
+
+				// Do something else when a page number is selected, e.g., highlight the selected page.
+				alert('Selected page: ' + page);
+			}
+			/*]]>*/
+		</script>
+	</div>
+
+	<!-- ######################## next & Previous Buttons  ######################## -->
+
+	<!-- Add a button to go to the previous page -->
+	<button th:if="${questions.hasPrevious()}" onclick="previousPage()">Previous
+		Page</button>
+
+	<!-- Add a button to go to the next page -->
+	<button th:if="${questions.hasNext()}" onclick="nextPage()">Next
+		Page</button>
+
+
+	<!-- ######################## next & Previous Buttons Script ######################## -->
+
+	<!-- Add a script to handle navigation -->
+	<script th:inline="javascript">
+		/*<![CDATA[*/
+		function navigateToPage(page) {
+			// Construct the URL for the specified page
+			var url = new URL(window.location.href);
+			url.searchParams.set('page', page);
+
+			// Navigate to the new URL
+			window.location.href = url.href;
+		}
+
+		function previousPage() {
+			// Get the current page number
+			var currentPage = /*[[${questions.number}]]*/0;
+
+			// Calculate the previous page number
+			var previousPage = currentPage - 1;
+
+			// Navigate to the previous page
+			navigateToPage(previousPage);
+		}
+
+		function nextPage() {
+			// Get the current page number
+			var currentPage = /*[[${questions.number}]]*/0;
+
+			// Calculate the next page number
+			var nextPage = currentPage + 1;
+
+			// Navigate to the next page
+			navigateToPage(nextPage);
+		}
+		/*]]>*/
+	</script>
+
+
+
+
+
+	<!--############# Footer Section ###############-->
+
+	<!-- 	<footer> &copy; 2023 Virtual Learning </footer> -->
+
+	<!-- ##################################### -->
+
 </body>
 </html>
