@@ -12,12 +12,15 @@ body {
 	padding: 0;
 	box-sizing: border-box;
 	background-color: #f4f4f4;
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
 }
 
 header {
 	background-color: #333;
 	color: white;
-	padding: 5px;
+	padding: 1px;
 	text-align: center;
 }
 
@@ -41,38 +44,46 @@ nav-b {
 	text-align: left;
 	display: flex;
 	justify-content: space-between;
-	/* Align children elements at each end */
-	align-items: center; /* Vertically center children elements */
-	padding-left: 20px; /* Add left padding for space */
-	padding-right: 20px; /* Add right padding for space */
-	color: #fff; /* Text color for the navigation bar */
+	align-items: center;
+	padding-left: 20px;
+	padding-right: 20px;
+	color: #fff;
 }
 
 #timer {
-	color: #ff5733; /* Specify your desired color code for the timer */
-	font-size: 18px; /* Adjust the font size as needed */
+	color: #ff5733;
+	font-size: 18px;
 	text-align: left;
-	/* Specify the desired text alignment for the timer */
 }
 
 main {
 	padding: 20px;
+	display: flex;
+	justify-content: space-between;
 }
 
 #Quest {
-	color: navy; /* Specify your desired color code for the timer */
-	font-size: 18px; /* Adjust the font size as needed */
-	text-align: right; /* Align the text to the right */
+	color: navy;
+	font-size: 18px;
+	text-align: right;
 	padding: 10px;
-	display: flex; /* Use flex container */
-	flex-wrap: wrap; /* Allow content to wrap to the next line */
+	display: flex;
+	flex-wrap: wrap;
 	justify-content: flex-start;
-	/* Align content to the end (left/start of page) */
 }
 
-/* Individual items within the flex container */
+/* Updated styles for the page numbers */
 #Quest span {
-	margin-right: 20px; /* Adjust the margin between items as needed */
+	margin-right: 20px;
+	cursor: pointer;
+	display: inline-block;
+	width: 25px;
+	height: 25px;
+	background-color: #3498db;
+	color: #fff;
+	text-align: center;
+	border-radius: 50%;
+	line-height: 25px;
 }
 
 footer {
@@ -80,45 +91,17 @@ footer {
 	color: white;
 	text-align: center;
 	padding: 10px;
-	position: fixed;
-	bottom: 0;
-	width: 100%;
+	margin-top: auto;
 }
 
-#error-message {
-	color: #4caf50;
-	margin-top: 10px;
-	margin-left: 20px; /* Adjust the left margin as needed */
+.left-side {
+	width: 70%;
 }
 
-#logout-message {
-	color: white;
-	margin-top: 10px;
-	text-align: right;
-}
-
-/* Style for clickable page numbers */
-.page-number-container {
-	position: fixed;
-	top: 50%;
-	right: 10px; /* Adjust the right offset as needed */
-	transform: translateY(-50%);
-	display: flex;
-	flex-direction: column;
-	align-items: flex-end;
-	z-index: 9999; /* Ensure the page numbers are above other elements */
-}
-
-.page-number {
-	display: inline-block;
-	width: 20px;
-	height: 20px;
-	background-color: #3498db;
-	color: #fff;
-	text-align: center;
-	border-radius: 50%;
-	margin-bottom: 5px;
-	cursor: pointer;
+.right-side {
+	width: 28%;
+	padding-left: 20px;
+	box-sizing: border-box;
 }
 
 ul, li {
@@ -128,38 +111,87 @@ ul, li {
 }
 </style>
 
-<script th:src="@{/js/timer.js}"></script>
+<!-- <script th:src="@{/js/timer.js}"></script> -->
 
 <!-- Add this script block to include the JavaScript -->
 <script th:inline="javascript">
-	/*<![CDATA[*/
-	function startTimer() {
-		var timeLeft = /*[[${timeLeft}]]*/60 * 60;
-		var timer = setInterval(
-				function() {
-					if (timeLeft <= 0) {
-						clearInterval(timer);
-						alert("Time's up!");
-						// You can add logic to check the answers here
-					} else {
-						timeLeft--;
-						document.getElementById("timer").innerHTML = formatTime(timeLeft);
-					}
-				}, 1000);
-	}
+    /*<![CDATA[*/
+    // Check if the timer is already running in localStorage
+    var timerIsRunning = localStorage.getItem('timerIsRunning') === 'true';
 
-	function formatTime(seconds) {
-		var minutes = Math.floor(seconds / 60);
-		var remainingSeconds = seconds % 60;
-		return minutes + ":" + (remainingSeconds < 10 ? "0" : "")
-				+ remainingSeconds;
-	}
-	/*]]>*/
+    // Initialize the timer
+    if (timerIsRunning) {
+        resumeTimer();
+    } else {
+        startTimer();
+    }
+
+    function startTimer() {
+        var spdVal = 1;
+        var cntDown = localStorage.getItem("countdownTime") || 60 * 60 * spdVal + 7;
+
+        var timer = setInterval(function () {
+            var mn, sc, ms;
+            cntDown--;
+            if (cntDown < 0) {
+                clearInterval(timer);
+                alert("Time's up!");
+                // You can add logic to check the answers here
+                return false;
+            }
+            mn = Math.floor((cntDown / spdVal) / 60);
+            mn = (mn < 10 ? '0' + mn : mn);
+            sc = Math.floor((cntDown / spdVal) % 60);
+            sc = (sc < 10 ? '0' + sc : sc);
+            ms = Math.floor(cntDown % spdVal);
+            ms = (ms < 10 ? '0' + ms : ms);
+            var result = mn + ':' + sc;
+            document.getElementById('timer').innerHTML = result;
+
+            // Store the countdown time in localStorage
+            localStorage.setItem("countdownTime", cntDown.toString());
+
+        }, spdVal * 1000); // Convert seconds to milliseconds
+
+        // Set the timer state in localStorage
+        localStorage.setItem('timerIsRunning', 'true');
+    }
+
+    function resumeTimer() {
+        var spdVal = 1;
+        var cntDown = localStorage.getItem("countdownTime") || 60 * 60 * spdVal + 7;
+
+        var timer = setInterval(function () {
+            var mn, sc, ms;
+            cntDown--;
+            if (cntDown < 0) {
+                clearInterval(timer);
+                alert("Time's up!");
+                // You can add logic to check the answers here
+                return false;
+            }
+            mn = Math.floor((cntDown / spdVal) / 60);
+            mn = (mn < 10 ? '0' + mn : mn);
+            sc = Math.floor((cntDown / spdVal) % 60);
+            sc = (sc < 10 ? '0' + sc : sc);
+            ms = Math.floor(cntDown % spdVal);
+            ms = (ms < 10 ? '0' + ms : ms);
+            var result = mn + ':' + sc;
+            document.getElementById('timer').innerHTML = result;
+
+            // Store the countdown time in localStorage
+            localStorage.setItem("countdownTime", cntDown.toString());
+
+        }, spdVal * 1000); // Convert seconds to milliseconds
+    }
+    /*]]>*/
 </script>
+
+<!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
 
 
 </head>
-<!-- -------------------------------- -->
+
 <body onload="startTimer()">
 
 	<header>
@@ -179,63 +211,63 @@ ul, li {
 		<div id="timer">60:00</div>
 	</h3>
 	</nav-b>
+
 	<!-- Display the current question -->
-	<div th:if="${questions.hasContent()}">
-		<form>
-			<ul th:each="question, questionIndex : ${questions.content}">
-				<li>
-					<p th:text="${questionIndex.index + 1 + '. ' + question.question}"></p>
-					<ul>
-						<li><input type="radio"
-							th:id="'option1_' + ${questionIndex.index}"
-							name="'question_' + ${questionIndex.index}" /> <label
-							th:for="'option1_' + ${questionIndex.index}"
-							th:text="${question.option1}"></label></li>
-						<li><input type="radio"
-							th:id="'option2_' + ${questionIndex.index}"
-							name="'question_' + ${questionIndex.index}" /> <label
-							th:for="'option2_' + ${questionIndex.index}"
-							th:text="${question.option2}"></label></li>
-						<li><input type="radio"
-							th:id="'option3_' + ${questionIndex.index}"
-							name="'question_' + ${questionIndex.index}" /> <label
-							th:for="'option3_' + ${questionIndex.index}"
-							th:text="${question.option3}"></label></li>
-						<li><input type="radio"
-							th:id="'option4_' + ${questionIndex.index}"
-							name="'question_' + ${questionIndex.index}" /> <label
-							th:for="'option4_' + ${questionIndex.index}"
-							th:text="${question.option4}"></label></li>
-					</ul>
-				</li>
-			</ul>
-			<h2>
-				<button type="submit">Submit</button>
-			</h2>
-		</form>
-	</div>
-
-	<!-- Display question numbers in circles -->
-
-	<div id="Quest">
-		<h3>
-			<label> Select Question:</label>
-		</h3>
-	</div>
-
-	<div id="Quest">
-		<div
-			th:each="page, pageIndex : ${#numbers.sequence(1, questions.totalPages)}">
-			<span class="page-number" th:text="${page}"
-				th:onclick="'selectPage(' + ${page} + ')'"></span>
+	<main>
+		<div class="left-side" th:if="${questions.hasContent()}">
+			<form>
+				<ul th:each="question, questionIndex : ${questions.content}">
+					<li>
+						<p th:text="${questionIndex.index + 1 + '. ' + question.question}"></p>
+						<ul>
+							<li><input type="radio"
+								th:id="'option1_' + ${questionIndex.index}"
+								name="'question_' + ${questionIndex.index}" /> <label
+								th:for="'option1_' + ${questionIndex.index}"
+								th:text="${question.option1}"></label></li>
+							<li><input type="radio"
+								th:id="'option2_' + ${questionIndex.index}"
+								name="'question_' + ${questionIndex.index}" /> <label
+								th:for="'option2_' + ${questionIndex.index}"
+								th:text="${question.option2}"></label></li>
+							<li><input type="radio"
+								th:id="'option3_' + ${questionIndex.index}"
+								name="'question_' + ${questionIndex.index}" /> <label
+								th:for="'option3_' + ${questionIndex.index}"
+								th:text="${question.option3}"></label></li>
+							<li><input type="radio"
+								th:id="'option4_' + ${questionIndex.index}"
+								name="'question_' + ${questionIndex.index}" /> <label
+								th:for="'option4_' + ${questionIndex.index}"
+								th:text="${question.option4}"></label></li>
+						</ul>
+					</li>
+				</ul>
+				<h2>
+					<button type="submit">Submit</button>
+				</h2>
+			</form>
 		</div>
-	</div>
 
+		<!-- Right side for "Select Question" -->
+		<div class="right-side">
+			<h3>
+				<label> Select Question:</label>
+			</h3>
+			<div id="Quest">
+				<div
+					th:each="page, pageIndex : ${#numbers.sequence(1, questions.totalPages)}">
+					<span class="page-number" th:text="${page}"
+						th:onclick="'selectPage(' + ${page} + ')'"></span>
+				</div>
+			</div>
+		</div>
+	</main>
+
+	<!-- Display page information -->
 	<div>
-		<!-- Display page information -->
 		<p
 			th:text="'Page ' + ${questions.number + 1} + ' of ' + ${questions.totalPages}"></p>
-
 
 		<script th:inline="javascript">
 			/*<![CDATA[*/
@@ -252,16 +284,15 @@ ul, li {
 		</script>
 	</div>
 
-	<!-- ######################## next & Previous Buttons  ######################## -->
-
 	<!-- Add a button to go to the previous page -->
-	<button th:if="${questions.hasPrevious()}" onclick="previousPage()">Previous
-		Page</button>
+	<div id="footerButton">
+		<button th:if="${questions.hasPrevious()}" onclick="previousPage()">Previous
+			Page</button>
 
-	<!-- Add a button to go to the next page -->
-	<button th:if="${questions.hasNext()}" onclick="nextPage()">Next
-		Page</button>
-
+		<!-- Add a button to go to the next page -->
+		<button th:if="${questions.hasNext()}" onclick="nextPage()">Next
+			Page</button>
+	</div>
 
 	<!-- ######################## next & Previous Buttons Script ######################## -->
 
@@ -301,15 +332,9 @@ ul, li {
 		/*]]>*/
 	</script>
 
-
-
-
-
 	<!--############# Footer Section ###############-->
-
-	<!-- 	<footer> &copy; 2023 Virtual Learning </footer> -->
+	<footer> &copy; 2023 Virtual Learning </footer>
 
 	<!-- ##################################### -->
-
 </body>
 </html>
